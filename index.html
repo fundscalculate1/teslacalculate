@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Inversión Diaria</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: white;
+            background: url('https://teslamag.de/wp-content/uploads/2016/04/CeRhxXY-scaled-1200x750.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .note {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 8px;
+            font-size: 1.2rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: #ecf0f1;
+            outline: none;
+        }
+
+        input:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #f39c12;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #f39c12;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            color: #fff;
+        }
+
+        button:hover {
+            background: #e67e22;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Plan de Inversión Diaria</h1>
+        <div class="note">
+            <p>🔸 <strong>Entrada mínima:</strong> 250 € (3 a 5 € diarios)</p>
+            <p>🔸 <strong>500 € o más:</strong> 5 a 7 € diarios</p>
+            <p>🔸 <strong>1000 € o más:</strong> 7 a 10 € diarios</p>
+        </div>
+        <form id="investmentForm">
+            <label for="investmentAmount">Monto de la inversión (€):</label>
+            <input type="number" id="investmentAmount" min="250" placeholder="Introduce el monto (mínimo 250)" required>
+            <button type="submit">Calcular</button>
+        </form>
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        document.getElementById('investmentForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const investmentAmount = parseFloat(document.getElementById('investmentAmount').value);
+
+            // Validar la entrada mínima
+            if (isNaN(investmentAmount) || investmentAmount < 250) {
+                alert('La inversión mínima es de 250 €.');
+                return;
+            }
+
+            // Calcular ganancias diarias
+            let dailyGainMin = 0;
+            let dailyGainMax = 0;
+
+            if (investmentAmount >= 1000) {
+                dailyGainMin = 7;
+                dailyGainMax = 10;
+            } else if (investmentAmount >= 500) {
+                dailyGainMin = 5;
+                dailyGainMax = 7;
+            } else if (investmentAmount >= 250) {
+                dailyGainMin = 3;
+                dailyGainMax = 5;
+            }
+
+            // Obtener la fecha actual y calcular desde el día siguiente
+            const today = new Date();
+            today.setDate(today.getDate() + 1); // Día siguiente
+            const month = today.getMonth(); // Mes actual (0-11)
+            const daysInMonth = new Date(today.getFullYear(), month + 1, 0).getDate(); // Días del mes
+
+            // Calcular ganancias mensuales
+            const monthlyGainMin = (dailyGainMin * daysInMonth).toFixed(2);
+            const monthlyGainMax = (dailyGainMax * daysInMonth).toFixed(2);
+
+            // Mostrar resultados
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <p><strong>Fecha de inicio:</strong> ${today.toLocaleDateString()}</p>
+                <p><strong>Ganancias diarias estimadas:</strong> ${dailyGainMin} € - ${dailyGainMax} €</p>
+                <p><strong>Ganancias mensuales estimadas:</strong> ${monthlyGainMin} € - ${monthlyGainMax} €</p>
+            `;
+        });
+    </script>
+</body>
+</html>
